@@ -25,7 +25,7 @@ class CommentController extends AbstractController
     {
         try {
             $data = $commentRepository->findAll();
-            $response = $serializer->serialize($data, 'json', ['groups' => ['comment', 'user']]);
+            $response = $serializer->serialize($data, 'json', ['groups' => ['comment']]);
 
             return new JsonResponse($response, 200, [], true);
         } catch (\Exception $e) {
@@ -33,7 +33,7 @@ class CommentController extends AbstractController
         }
     }
 
-       #[Route('/new', name: 'app_comment_new', methods: ['POST'])]
+       #[Route('', name: 'app_comment_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, PostRepository $postRepository): Response
     {
         try {
@@ -62,7 +62,7 @@ class CommentController extends AbstractController
             if ($comment === null) {
                 throw new \Exception('Comment not found');
             }
-            $response = $serializer->serialize($comment, 'json', ['groups' => ['comment', 'user']]);
+            $response = $serializer->serialize($comment, 'json', ['groups' => ['comment']]);
 
             return new JsonResponse($response, 200, [], true);
         } catch (\Exception $e) {
@@ -70,7 +70,7 @@ class CommentController extends AbstractController
         }
     }
 
-    #[Route('/{id}/edit', name: 'app_comment_edit', methods: ['PUT'])]
+    #[Route('/{id}', name: 'app_comment_edit', methods: ['PUT'])]
     public function edit(Request $request, Comment $comment, EntityManagerInterface $entityManager, UserRepository $userRepository, PostRepository $postRepository): Response
     {
         try {
@@ -121,7 +121,7 @@ class CommentController extends AbstractController
                 return new JsonResponse(['message' => 'No comments found for this post'], Response::HTTP_NOT_FOUND);
             }
 
-             $response = $serializer->serialize($comments, 'json', ['groups' => ['comment', 'user']]);
+             $response = $serializer->serialize($comments, 'json', ['groups' => ['comment']]);
             return new JsonResponse($response, Response::HTTP_OK, [], true);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);

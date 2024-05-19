@@ -29,7 +29,7 @@ class PosterController extends AbstractController
         }
     }
 
-    #[Route('/new', name: 'app_poster_new', methods: ['POST'])]
+    #[Route('', name: 'app_poster_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         try {
@@ -64,7 +64,7 @@ class PosterController extends AbstractController
         }
     }
 
-    #[Route('/{id}/edit', name: 'app_poster_edit', methods: ['PUT'])]
+    #[Route('/{id}', name: 'app_poster_edit', methods: ['PUT'])]
     public function edit(Request $request, Poster $poster, EntityManagerInterface $entityManager): Response
     {
         try {

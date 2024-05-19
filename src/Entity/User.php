@@ -19,16 +19,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['command','comment','post'])]
+    #[Groups(['command','comment','post','user'])]
     private ?int $id = null;
     
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['command','comment','post'])]
+    #[Groups(['command','comment','post','user'])]
     private ?string $email = null;
     
+    #[Groups(['user'])]
     #[ORM\Column]
     private array $roles = [];
 
+    #[Groups(['user'])]
     #[ORM\Column]
     private bool $isAdmin = false;
     
@@ -36,13 +38,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['user'])]
     private ?string $password = null;
 
     #[ORM\Column]
+    #[Groups(['user'])]
     private ?int $numero = null;
 
     #[ORM\Column(length: 50)]
-   #[Groups(['command', 'comment', 'post'])]
+   #[Groups(['command', 'comment', 'post','user'])]
     private ?string $username = null;
 
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: "user")]

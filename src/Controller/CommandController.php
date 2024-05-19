@@ -62,14 +62,14 @@ public function new(Request $request, EntityManagerInterface $entityManager, Use
             if ($command === null) {
                 throw new \Exception('Command not found');
             }
-            $response = $serializer->serialize($command, 'json');
+             $response = $serializer->serialize($command, 'json', ['groups' => 'command']);
             return new JsonResponse($response, 200, [], true);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    #[Route('/{id}/edit', name: 'app_command_edit', methods: ['PUT'])]
+    #[Route('/{id}', name: 'app_command_edit', methods: ['PUT'])]
 public function edit(Request $request, Command $command, EntityManagerInterface $entityManager, UserRepository $userRepository, PosterRepository $posterRepository): Response
 {
     try {
