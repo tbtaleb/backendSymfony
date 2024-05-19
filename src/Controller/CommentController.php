@@ -106,15 +106,23 @@ class CommentController extends AbstractController
     }
 
     #[Route('', name: 'app_comment_by_post', methods: ['GET'])]
-    public function getCommentByPostId($postId, CommentRepository $commentRepository, SerializerInterface $serializer): Response
+     public function getCommentByPostId(Request $request, CommentRepository $commentRepository, SerializerInterface $serializer): Response
     {
         try {
-            $comments = $commentRepository->findByPostId($postId);
-            if ($comments === null) {
-                throw new \Exception('No comments found for this post');
+            $postId = $request->query->get('postId');
+            
+            if (!$postId) {
+                return new JsonResponse(['message' => 'Post ID parameter is missing'], Response::HTTP_BAD_REQUEST);
             }
-            $response = $serializer->serialize($comments, 'json');
-            return new JsonResponse($response, 200, [], true);
+
+            $comments = $commentRepository->findByPostId($postId);
+            
+            if ($comments === null) {
+                return new JsonResponse(['message' => 'No comments found for this post'], Response::HTTP_NOT_FOUND);
+            }
+
+             $response = $serializer->serialize($comments, 'json', ['groups' => ['comment', 'user']]);
+            return new JsonResponse($response, Response::HTTP_OK, [], true);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
