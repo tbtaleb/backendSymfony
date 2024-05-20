@@ -45,9 +45,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user'])]
     private ?int $numero = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50,)]
    #[Groups(['command', 'comment', 'post','user'])]
     private ?string $username = null;
+
+    #[ORM\Column(length: 50, options: ['default' => 'DefaultUserPic.jpg'])]
+    #[Groups(['command', 'comment', 'post', 'user'])]
+    private ?string $profilePic = 'DefaultUserPic.jpg';
 
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: "user")]
     private $comments;
@@ -154,6 +158,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getProfilePic(): ?string
+    {
+        return $this->profilePic;
+    }
+
+    public function setProfilePic(string $profilePic): self
+    {
+        $this->profilePic = $profilePic;
+
+        return $this;
+    }
     /**
      * Returning a salt is only needed, if you are not using a modern
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.

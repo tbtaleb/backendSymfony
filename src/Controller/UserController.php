@@ -86,35 +86,41 @@ public function show($id, UserRepository $userRepository, SerializerInterface $s
         }
     }
 
-#[Route('/{id}', name: 'app_user_edit', methods: ['PUT'])]
-public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
-{
-    try {
-        $data = json_decode($request->getContent(), true);
-        $user->setUsername($data['username']);
-        $user->setEmail($data['email']);
-        $user->setPassword($data['password']);
-        $user->setNumero($data['numero']);
-        $entityManager->flush();
-        return new JsonResponse(['status' => 'User updated'], Response::HTTP_OK);
-    } catch (\Exception $e) {
-        return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-    }
-}
-
-#[Route('/{id}', name: 'app_user_delete', methods: ['DELETE'])]
-public function delete($id, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
-{
-    try {
-        $user = $userRepository->find($id);
-        if ($user === null) {
-            throw new \Exception('User not found');
+    
+    #[Route('/{id}', name: 'app_user_edit', methods: ['PUT'])]
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $user->setUsername($data['username']);
+            $user->setEmail($data['email']);
+            $user->setPassword($data['password']);
+            $user->setNumero($data['numero']);
+            // Set the profilePic property
+            if (isset($data['profilePic'])) {
+                $user->setProfilePic($data['profilePic']);
+            }
+            $entityManager->flush();
+            return new JsonResponse(['status' => 'User updated'], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        $entityManager->remove($user);
-        $entityManager->flush();
-        return new JsonResponse(['status' => 'User deleted'], Response::HTTP_NO_CONTENT);
-    } catch (\Exception $e) {
-        return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-}
+
+
+    #[Route('/{id}', name: 'app_user_delete', methods: ['DELETE'])]
+    public function delete($id, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    {
+    try {
+    $user = $userRepository->find($id);
+    if ($user === null) {
+    throw new \Exception('User not found');
+    }
+    $entityManager->remove($user);
+    $entityManager->flush();
+    return new JsonResponse(['status' => 'User deleted'], Response::HTTP_OK);
+    } catch (\Exception $e) {
+    return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+    }
 }
