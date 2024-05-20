@@ -32,6 +32,16 @@ class PosterRepository extends ServiceEntityRepository
     }
 
 
+    
+    public function findByAlbumWord(string $word)
+    {
+            return $this->createQueryBuilder('p')
+                ->where('p.album LIKE :word')
+                ->setParameter('word', '%' . $word . '%')
+                ->getQuery()
+                ->getResult();
+    }
+
 //    /**
 //     * @return Poster[] Returns an array of Poster objects
 //     */

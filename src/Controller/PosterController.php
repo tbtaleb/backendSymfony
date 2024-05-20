@@ -17,12 +17,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/poster')]
 class PosterController extends AbstractController
 {
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
+    
 
     #[Route('/posters', name: 'app_poster_index', methods: ['GET'])]
     public function index(PosterRepository $posterRepository, SerializerInterface $serializer): Response
@@ -127,4 +122,29 @@ class PosterController extends AbstractController
         }
     }
     
+
+    #[Route('/album', name: 'app_poster_get_by_album_word', methods: ['GET'])]
+    public function getPosterByAlbumWord(Request $request, PosterRepository $posterRepository, SerializerInterface $serializer): Response
+    {
+        try {
+            $word = $request->query->get('word');
+            
+            if (!$word) {
+                return new JsonResponse(['message' => 'word parameter is missing'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $posters = $posterRepository->findByAlbumWord($word);
+            $this->logger->info('Posters found: ' . count($posters));
+
+            if (empty($posters)) {
+                return new JsonResponse(['message' => 'no posters found'], Response::HTTP_NOT_FOUND);
+            }
+
+            $response = $serializer->serialize($posters, 'json');
+            return new JsonResponse($response, Response::HTTP_OK, [], true);
+        } catch (\Exception $e) {
+            $this->logger->error('Error: ' . $e->getMessage());
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
