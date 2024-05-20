@@ -31,7 +31,7 @@ class PostController extends AbstractController
         }
     }
 
-    #[Route('/new', name: 'app_post_new', methods: ['POST'])]
+    #[Route('', name: 'app_post_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         try {
@@ -71,7 +71,7 @@ class PostController extends AbstractController
         }
     }
 
-   #[Route('/{id}/edit', name: 'app_post_edit', methods: ['PUT'])]
+   #[Route('/{id}', name: 'app_post_edit', methods: ['PUT'])]
     public function edit(Request $request, Post $post, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         try {

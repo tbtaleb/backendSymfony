@@ -22,7 +22,7 @@ class UserController extends AbstractController
     {
         try {
             $data = $userRepository->findAll();
-            $response = $serializer->serialize($data, 'json');
+            $response = $serializer->serialize($data, 'json', ['groups' => 'user']);
             return new JsonResponse($response, 200, [], true);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -30,7 +30,7 @@ class UserController extends AbstractController
     }
     
 
-    #[Route('/new', name: 'app_user_new', methods: ['POST'])]
+    #[Route('', name: 'app_user_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
     try {
@@ -56,7 +56,7 @@ public function show($id, UserRepository $userRepository, SerializerInterface $s
         if ($user === null) {
             throw new \Exception('User not found');
         }
-        $response = $serializer->serialize($user, 'json');
+         $response = $serializer->serialize($user, 'json', ['groups' => 'user']);
         return new JsonResponse($response, 200, [], true);
     } catch (\Exception $e) {
         return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -79,14 +79,14 @@ public function show($id, UserRepository $userRepository, SerializerInterface $s
                 return new JsonResponse(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
             }
 
-            $response = $serializer->serialize($user, 'json');
+             $response = $serializer->serialize($user, 'json', ['groups' => 'user']);
             return new JsonResponse($response, Response::HTTP_OK, [], true);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-#[Route('/{id}/edit', name: 'app_user_edit', methods: ['PUT'])]
+#[Route('/{id}', name: 'app_user_edit', methods: ['PUT'])]
 public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
 {
     try {
