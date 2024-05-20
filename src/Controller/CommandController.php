@@ -39,9 +39,16 @@ public function new(Request $request, EntityManagerInterface $entityManager, Use
         $data = json_decode($request->getContent(), true);
         $command->setLocation($data['location']);
         // Get the user and poster by their ids
-        $user = $userRepository->find($data['user']['id']);
+        $user = $userRepository->find($data['userId']);
+        if (!$user) {
+        return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+        $command->setUser($user);
         foreach ($data['posters'] as $posterId) {
             $poster = $posterRepository->find($posterId);
+            if (!$poster) {
+                return new JsonResponse(['error' => 'Poster not found'], Response::HTTP_NOT_FOUND);
+            }
             $command->addPoster($poster);
         }
         $command->setUser($user);
